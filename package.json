@@ -1,0 +1,40 @@
+{
+  "name": "agent-control-plane",
+  "version": "0.1.0",
+  "description": "Four enforcement gates for running LLM agents in production: spend ceiling, human release, disclosure guards, retraction.",
+  "type": "module",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "schema.sql",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test \"test/*.test.ts\"",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "llm",
+    "governance",
+    "finops",
+    "human-in-the-loop",
+    "cloudflare-workers"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  }
+}

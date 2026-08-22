@@ -1,0 +1,53 @@
+// approval-gate.ts — machine-generated content requires an explicit human release.
+//
+// There is no autonomous publish path. Not a flag, not an env var, not an admin override.
+// The gate is deliberately boring; its value is that it sits in the write path rather than
+// in a policy document.
+
+export type ItemStatus = "pending" | "released" | "rejected" | "retracted";
+
+export interface ReleaseState {
+  status: ItemStatus;
+  /** Identity of the human releasing it. Null/empty means nobody has. */
+  releasedBy?: string | null;
+}
+
+export type ReleaseReason =
+  | "ok"
+  | "awaiting_human_release"
+  | "already_rejected"
+  | "already_retracted"
+  | "already_released";
+
+export interface ReleaseDecision {
+  allowed: boolean;
+  reason: ReleaseReason;
+}
+
+/**
+ * Decide whether an item may be published.
+ *
+ * Fails closed on every path that is not an explicit human release. Note that a rejected or
+ * retracted item can never be published by re-releasing it — it must be re-staged as a new
+ * item, so that the audit trail records a decision rather than a status flip.
+ */
+export function evaluateRelease(s: ReleaseState): ReleaseDecision {
+  if (s.status === "rejected") return { allowed: false, reason: "already_rejected" };
+  if (s.status === "retracted") return { allowed: false, reason: "already_retracted" };
+  if (s.status === "released") return { allowed: false, reason: "already_released" };
+
+  const by = (s.releasedBy ?? "").trim();
+  if (!by) return { allowed: false, reason: "awaiting_human_release" };
+
+  return { allowed: true, reason: "ok" };
+}
+
+/**
+ * Retraction is the inverse gate and is ALWAYS permitted. Taking something down must never
+ * be blocked by the thing that let it up. If your rollback path requires a deploy, you do
+ * not have a rollback path.
+ */
+export function evaluateRetraction(s: Pick<ReleaseState, "status">): ReleaseDecision {
+  if (s.status === "retracted") return { allowed: false, reason: "already_retracted" };
+  return { allowed: true, reason: "ok" };
+}
