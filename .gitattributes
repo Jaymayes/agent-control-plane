@@ -1,0 +1,14 @@
+# Normalize line endings so a clone on Linux/macOS doesn't show the whole tree as modified.
+# Everything Git detects as text is stored and checked out with LF, on every platform.
+* text=auto eol=lf
+
+# Binary-safe: never munge line endings in these, whatever heuristics say.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
