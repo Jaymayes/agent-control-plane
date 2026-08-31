@@ -126,7 +126,7 @@ inference entirely.
 This package defaults to **fail-closed** and makes the alternative explicit:
 
 ```ts
-evaluateBudget(state, { onStoreError: "allow" }); // opt in deliberately
+evaluateBudgetOnStoreError(capUsd, { onStoreError: "allow" }); // opt in deliberately
 ```
 
 The system this came from splits it deliberately: **interactive paths fail open, background
