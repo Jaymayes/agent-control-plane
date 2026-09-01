@@ -186,6 +186,12 @@ length of your TTL, which is exactly the window in which spend is running hottes
 v0. Extracted from a running system, generalized, and re-tested in isolation. The originals
 are in production; these versions are not yet, which is the honest distinction.
 
+## Field notes
+
+The system this package was extracted from publishes its failures with the queries included.
+
+- [Failure autopsy 01: for ten days, most of my click data was me](docs/failure-autopsy-01.md)
+
 ## License
 
 MIT
