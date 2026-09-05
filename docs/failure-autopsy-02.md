@@ -4,6 +4,16 @@
 
 All figures are from live queries against the production database and repository history, re-verified 25 August 2026. Queries included.
 
+> ### ⚠️ Correction, 5 September 2026 — this post claimed a fix that never shipped
+>
+> Finding three below originally ended: *"I fixed it on 22 August, four months after the constant moved, by returning `null`."*
+>
+> **That was false when published.** The edit was real, but it was committed to a local branch on a second checkout of the repository, and left there — never merged, never pushed. `main` still returns the stale `capUsd: 5`, and its HEAD has moved on since. I verified this on 5 September by grepping the live source and asking git where the commit lived; the answer was one unpushed branch on one machine.
+>
+> I have corrected the sentence in place rather than deleting it, and added it to "What I was wrong about" as the fifth item, because it belongs there. **This post is about literals that were true when written in a system where the truth moved. It then asserted its own fix in the past tense on the strength of having typed it.** That is the same error one level up, committed by the essay diagnosing it.
+>
+> Left standing so the failure is legible: the original claim, this notice, and the corrected text are all here.
+
 The timeline, since it matters later: the cap first appears in the codebase on **2 April 2026**. The first row lands in its ledger on **15 March 2026**. It became real enforcement rather than telemetry on **28 June 2026**. So: roughly five months of existing, two months of actually being wired to block something — and zero blocks.
 
 ---
@@ -44,9 +54,13 @@ While writing this post I found a third instance of the identical pattern — a 
 return { allowed: true, reason: 'ok', spentUsd: 0, capUsd: 5 };
 ```
 
-That's the fail-open branch: if the spend store can't be read, allow the call rather than take all inference down over a database blip. Nothing is mis-enforced there, because nothing is enforced at all. But the `429` response body reported a `$5` ceiling that had been `$0.32` since August, misstating it by about 15×. I fixed it on 22 August, four months after the constant moved, by returning `null` — on a path that enforces nothing, "unknown" is honest and a stale number is not.
+That's the fail-open branch: if the spend store can't be read, allow the call rather than take all inference down over a database blip. Nothing is mis-enforced there, because nothing is enforced at all. But the `429` response body reported a `$5` ceiling that had been `$0.32` since August, misstating it by about 15×. On a path that enforces nothing, "unknown" is honest and a stale number is not, so the correct return is `null`.
 
-Three instances of one defect: a literal that was true when written, in a system where the truth moved.
+~~I fixed it on 22 August, four months after the constant moved, by returning `null`.~~ **Corrected 5 September 2026: I did not.** I wrote that change and committed it to a branch called `fix/finops-stale-cap-figures`, on a second checkout of the same repository, and never merged or pushed it. The enforced source still returns `5`.
+
+I also cannot currently tell you what the *deployed* worker runs, and the reason is this post's own subject. `wrangler deploy` ships the working tree rather than a named commit, so a deploy launched from that checkout while it sat on the fix branch would have carried the fix into production without it ever reaching `main`. The two possibilities are distinguishable only by reading a `capUsd` value that appears in exactly one place — the body of a `429` — **which this gate has never once returned.** The instrument that would settle it is the instrument the post exists to report is untested.
+
+Three instances of one defect: a literal that was true when written, in a system where the truth moved. Call the unshipped fix a fourth, in a different medium.
 
 ## Finding four: the part I didn't expect
 
@@ -87,6 +101,8 @@ It's inert now: the gate only reads the row matching today's date, and since the
 
 I'll add that "fourteen months" is what I first wrote there, from memory, before checking. The real span is five. Even the sentence admitting I never checked a number contained a number I hadn't checked.
 
+**And I published a fix I had not shipped.** This is the fifth item and the worst of them, because it happened *in this post*, after all the others were written down. I made the edit, committed it to a branch, and wrote "I fixed it" — treating the act of typing a change as the change taking effect. It is the identical reasoning error as calling a cap "operational" because the code existed, and I made it eleven days after publishing the diagnosis. Before I published, I verified that the file rendered, that the byte count matched, and that no database identifiers had leaked. I never verified the one thing the post asserted about the world. **A claim about your system needs the same evidence standard as a number in it, and "I wrote the fix" is not evidence that the fix is running.**
+
 ## The part that generalises
 
 If you run autonomous agents with a spending ceiling, three questions are worth more than reading the code:
@@ -94,6 +110,7 @@ If you run autonomous agents with a spending ceiling, three questions are worth 
 1. **Has it ever fired?** Not "is it wired up" — has the blocking branch executed in production, ever? If the answer is no, you have an untested control, regardless of test coverage.
 2. **Where else can this number come from?** Code constant, schema default, environment variable, a row somebody set by hand in April. Each is a source of truth, and the lowest one usually wins.
 3. **What happens when the store is unreachable?** Fail open or fail closed is a real decision with real consequences, and it should be a written policy, not whatever the catch block happened to return.
+4. **Is the fix merged, or only committed?** Added 5 September, at my own expense. A commit on a local branch is indistinguishable from a shipped fix in your memory and completely distinguishable in production. If you work across more than one checkout, `git branch --contains <sha>` before you tell anyone it's done — and before you write it down as done, which is how it becomes true in your own head.
 
 I'm not changing the fail-open posture on the interactive path — a database blip shouldn't take live inference down, and my background workers already fail closed. That split is deliberate. What I'm changing is that I now know it's a decision, rather than assuming it was one.
 
