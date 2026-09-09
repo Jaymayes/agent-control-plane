@@ -191,7 +191,9 @@ are in production; these versions are not yet, which is the honest distinction.
 The system this package was extracted from publishes its failures with the queries included.
 
 - [Failure autopsy 01: for ten days, most of my click data was me](docs/failure-autopsy-01.md)
-- [Failure autopsy 02: my kill switch has never once fired](docs/failure-autopsy-02.md)
+- [Failure autopsy 02: my kill switch has never once fired](docs/failure-autopsy-02.md) — carries a
+  published correction: it claimed a fix that had been committed to a local branch and never shipped.
+- [Failure autopsy 03: for 35 days my publish hook did nothing, successfully](docs/failure-autopsy-03.md)
 
 ## License
 
