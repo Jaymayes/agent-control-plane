@@ -9,7 +9,7 @@ import {
   evaluateBudgetOnStoreError,
   checkDisclosures,
   evaluateRelease,
-} from "agent-control-plane";
+} from "spendbrake";
 
 interface Env {
   DB: D1Database;

@@ -1,5 +1,5 @@
 {
-  "name": "agent-control-plane",
+  "name": "spendbrake",
   "version": "0.1.0",
   "description": "Four enforcement gates for running LLM agents in production: spend ceiling, human release, disclosure guards, retraction.",
   "type": "module",
@@ -29,7 +29,10 @@
     "governance",
     "finops",
     "human-in-the-loop",
-    "cloudflare-workers"
+    "cloudflare-workers",
+    "llm-cost-control",
+    "spending-limit",
+    "kill-switch"
   ],
   "engines": {
     "node": ">=22"
@@ -40,10 +43,10 @@
   "author": "Jamarr Mayes",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Jaymayes/agent-control-plane.git"
+    "url": "git+https://github.com/Jaymayes/spendbrake.git"
   },
-  "homepage": "https://github.com/Jaymayes/agent-control-plane#readme",
+  "homepage": "https://github.com/Jaymayes/spendbrake#readme",
   "bugs": {
-    "url": "https://github.com/Jaymayes/agent-control-plane/issues"
+    "url": "https://github.com/Jaymayes/spendbrake/issues"
   }
 }

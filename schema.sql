@@ -1,4 +1,4 @@
--- Reference schema for agent-control-plane (D1 / SQLite).
+-- Reference schema for spendbrake (D1 / SQLite).
 -- Two tables: one spend window, one approval queue.
 
 -- ── Spend window ────────────────────────────────────────────────────────────

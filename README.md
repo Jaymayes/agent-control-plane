@@ -1,6 +1,8 @@
-# agent-control-plane
+# spendbrake
 
 Four gates for running LLM agents in production without hoping they behave.
+
+> Formerly `agent-control-plane`. Old links redirect here.
 
 Extracted from a governed autonomous content system that has been running on Cloudflare
 Workers since 2025. Every gate here is enforcement, not telemetry — each one has an
@@ -39,7 +41,7 @@ storage contract needed to make them binding.
 A pre-call ceiling. The decision function is pure, so it is testable without a database:
 
 ```ts
-import { evaluateBudget, estimateCostUsd } from "agent-control-plane";
+import { evaluateBudget, estimateCostUsd } from "spendbrake";
 
 const decision = evaluateBudget({
   spentUsd: 0.30,
@@ -78,7 +80,7 @@ Machine-generated content stages as `pending` and requires an explicit human rel
 is no autonomous publish path — not a flag, not an env var, not an admin override.
 
 ```ts
-import { evaluateRelease } from "agent-control-plane";
+import { evaluateRelease } from "spendbrake";
 
 evaluateRelease({ status: "pending", releasedBy: null });
 // → { allowed: false, reason: "awaiting_human_release" }
@@ -96,7 +98,7 @@ Deterministic checks that run before publication — no model call, so they cann
 out of it by a prompt.
 
 ```ts
-import { checkDisclosures } from "agent-control-plane";
+import { checkDisclosures } from "spendbrake";
 
 checkDisclosures(copy, { requireAd: true, requireAiGenerated: true });
 // → { allowed: false, reason: "missing_disclosure", missing: ["ai_generated"] }
@@ -194,6 +196,11 @@ The system this package was extracted from publishes its failures with the queri
 - [Failure autopsy 02: my kill switch has never once fired](docs/failure-autopsy-02.md) — carries a
   published correction: it claimed a fix that had been committed to a local branch and never shipped.
 - [Failure autopsy 03: for 35 days my publish hook did nothing, successfully](docs/failure-autopsy-03.md)
+
+## Author
+
+Built and run by **Jamarr Mayes** — two decades in regulated sales, now building governed AI systems solo.
+[LinkedIn](https://www.linkedin.com/in/jamarrmayes) · [referralsvc.com/about](https://referralsvc.com/about)
 
 ## License
 
