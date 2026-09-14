@@ -13,6 +13,8 @@ All figures are from live queries against the production database and repository
 > I have corrected the sentence in place rather than deleting it, and added it to "What I was wrong about" as the fifth item, because it belongs there. **This post is about literals that were true when written in a system where the truth moved. It then asserted its own fix in the past tense on the strength of having typed it.** That is the same error one level up, committed by the essay diagnosing it.
 >
 > Left standing so the failure is legible: the original claim, this notice, and the corrected text are all here.
+>
+> **Update, 14 September 2026:** the fix has now shipped. It was merged to `main` on 9 September 2026 and is in the build deployed to production on 14 September, which returns `capUsd: null` on the fail-open path. The sentences above that say `main` "still returns" `5` were true on 5 September and are not true now. I am leaving them, dated, because a correction written in the present tense goes stale exactly like the literal it corrected. One thing has not changed: I still have not seen that path answer in production, so this is verified from the deployed source, not from a live response.
 
 The timeline, since it matters later: the cap first appears in the codebase on **2 April 2026**. The first row lands in its ledger on **15 March 2026**. It became real enforcement rather than telemetry on **28 June 2026**. So: roughly five months of existing, two months of actually being wired to block something — and zero blocks.
 
@@ -56,7 +58,7 @@ return { allowed: true, reason: 'ok', spentUsd: 0, capUsd: 5 };
 
 That's the fail-open branch: if the spend store can't be read, allow the call rather than take all inference down over a database blip. Nothing is mis-enforced there, because nothing is enforced at all. But the `429` response body reported a `$5` ceiling that had been `$0.32` since August, misstating it by about 15×. On a path that enforces nothing, "unknown" is honest and a stale number is not, so the correct return is `null`.
 
-~~I fixed it on 22 August, four months after the constant moved, by returning `null`.~~ **Corrected 5 September 2026: I did not.** I wrote that change and committed it to a branch called `fix/finops-stale-cap-figures`, on a second checkout of the same repository, and never merged or pushed it. The enforced source still returns `5`.
+~~I fixed it on 22 August, four months after the constant moved, by returning `null`.~~ **Corrected 5 September 2026: I did not.** I wrote that change and committed it to a branch called `fix/finops-stale-cap-figures`, on a second checkout of the same repository, and never merged or pushed it. The enforced source still returns `5`. _(Update, 14 September 2026: no longer true — merged 9 September 2026, deployed 14 September. See the note at the top.)_
 
 I also cannot currently tell you what the *deployed* worker runs, and the reason is this post's own subject. `wrangler deploy` ships the working tree rather than a named commit, so a deploy launched from that checkout while it sat on the fix branch would have carried the fix into production without it ever reaching `main`. The two possibilities are distinguishable only by reading a `capUsd` value that appears in exactly one place — the body of a `429` — **which this gate has never once returned.** The instrument that would settle it is the instrument the post exists to report is untested.
 
